@@ -24,7 +24,9 @@ root.rowconfigure(0, weight=1)
 #피트를 입력할 entry widget생성
 feet = StringVar()#StringVar는 Tkinter에서 제공하는 변수 클래스다. StringVar는 문자열 값을 저장하기 위한 클래스. 얘 말고 intvar doubleVar도 있음. .set() .get()으로 값을 넣고 뺌.
 
-feet_entry = ttk.Entry(mainframe, width=7, textvariable=feet)#mainframe: 위젯이 들어갈 부모를 지정, width=7 textvariable=feet 은 configuration options임. 7개의 문자가 보이도록 길이를 지정함.
+feet_entry = ttk.Entry(mainframe, width=7, textvariable=feet)
+#mainframe: 위젯이 들어갈 부모를 지정, width=7 textvariable=feet 은 configuration options임. 7개의 문자가 보이도록 길이를 지정함. textvariable로 입력한 값이 feet에 입력되게 함.
+
 feet_entry.grid(column=2, row=1, sticky=(W, E))#위젯을 어디에 넣을지 행과 열을 지정함. sticky는 정렬 옵션임. 지금 왼쪽 오른쪽을 다 선택해서 중앙으로 정렬됨.
 
 #나머지 위젯들도 생성하고, 어떤 그리드를 지정함.
