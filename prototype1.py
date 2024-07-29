@@ -26,6 +26,8 @@ class ebookToPDF:
         self.posDisplay1.set("[0,0]")
         self.posDisplay2.set("[0,0]")
 
+        self.region = (0,0,0,0)#캡쳐 영역 설정
+
         progress = DoubleVar()
         progress.set(0.0)
 
@@ -74,7 +76,7 @@ class ebookToPDF:
         self.position = 2
         root.bind("<Key-space>", self.getPointerPos)
 
-    def getPointerPos(self,*args):
+    def getPointerPos(self):
         posx,posy = pyautogui.position()
         if(self.position == 1):
             self.x1 = posx
@@ -85,6 +87,10 @@ class ebookToPDF:
             self.y2 = posy
             self.posDisplay2.set(str([posx,posy]))
         root.bind("<Key-space>", None)
+
+    def calculateRegion(self,*args):
+        self.region = (self.x1,self.y1,self.x2,self.y2)
+
 
 
 root = Tk()
