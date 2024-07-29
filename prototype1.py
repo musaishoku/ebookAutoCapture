@@ -1,3 +1,4 @@
+#from pywinauto.keyboard import send_keys
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -6,6 +7,8 @@ import mss
 import mss.tools
 import os
 import time
+import pydirectinput as pdi
+
 
 
 class ebookToPDF:
@@ -37,7 +40,7 @@ class ebookToPDF:
         self.progress.set(0.0)
 
         root.title("ebookToPDF")
-        root.geometry("390x300")
+        root.geometry("390x310")
         #root.resizable(width=False, height=False)
 
         #frame = ttk.Frame(root)        
@@ -53,18 +56,18 @@ class ebookToPDF:
         ttk.Label(contents, textvariable=self.posDisplay1, width=10).grid(column=2, row=1, sticky=(W, E))
         ttk.Label(contents, text="이미지 우측 하단 좌표", ).grid(column=1, row=2, sticky=W)
         ttk.Label(contents, textvariable=self.posDisplay2, width=10).grid(column=2, row=2, sticky=(W, E))
-        ttk.Button(contents, text="좌표위치클릭", command=self.getPointerPosCallLeft).grid(column=3, row=1, sticky=(W, E))
-        ttk.Button(contents, text="좌표위치클릭", command=self.getPointerPosCallRight).grid(column=3, row=2, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallLeft).grid(column=3, row=1, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallRight).grid(column=3, row=2, sticky=(W, E))
 
 
         ttk.Label(contents, text="총 페이지 수").grid(column=1, row=3, sticky=W)
-        ttk.Label(contents, text="PDF 이름").grid(column=1, row=4, sticky=W)
+        ttk.Label(contents, text="파일 이름").grid(column=1, row=4, sticky=W)
         ttk.Entry(contents, width=20, textvariable=self.pages).grid(column=3, row=3, sticky=E)
         ttk.Entry(contents, width=20, textvariable=self.name).grid(column=3, row=4, sticky=E)
 
-        ttk.Label(contents, text="캡쳐속도").grid(column=1, row=5, sticky=W)
+        ttk.Label(contents, text="캡쳐 간격(초)").grid(column=1, row=5, sticky=W)
         ttk.Label(contents, textvariable=self.captureSpeed,width=3).grid(column=2, row=5, sticky=(W, E))
-        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=0.1, to=1.0, variable=self.captureSpeed).grid(column=3, row=5, sticky=E)
+        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=0.1, to=1.0, variable=self.captureSpeed).grid(column=3, row=5, sticky=(W,E))
         
         ttk.Progressbar(contents, orient=HORIZONTAL,length=30, mode='determinate', maximum = float(self.pages.get()), variable=self.progress).grid(column=1, row=6,columnspan=3,sticky=(W,E))
 
@@ -115,9 +118,14 @@ class ebookToPDF:
         for i in range(self.pages.get()):
             capture.process()
             self.progress.set(self.progress.get()+1)
-            pyautogui.keyDown('right')
+            #send_keys('{RIGHT}')
+            # pdi.keyDown(pdi.KEY_RIGHT)
+            # time.sleep(0.1)  # 0.1초 동안 유지
+            # pdi.keyUp(pdi.KEY_RIGHT)
+            #pdi.click(button='left')
+            pdi.keyDown("right")
             time.sleep(0.1)
-            pyautogui.keyUp('right')
+            pdi.keyUp("right")
             time.sleep(self.captureSpeed.get())
 
 
