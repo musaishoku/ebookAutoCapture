@@ -107,9 +107,19 @@ class ebookToPDF:
         print(self.dirPath.get())
 
     def captureCall(self, *args):
+        time.sleep(2)
+        self.progress.set(0)
         self.calculateRegion()
         capture = Capture(self)
-        capture.process()
+
+        for i in range(self.pages.get()):
+            capture.process()
+            self.progress.set(self.progress.get()+1)
+            pyautogui.keyDown('right')
+            time.sleep(0.1)
+            pyautogui.keyUp('right')
+            time.sleep(self.captureSpeed.get())
+
 
 
 class Capture:
@@ -121,9 +131,6 @@ class Capture:
         self.dirpath = self.ebookToPdf.dirPath.get().replace("/","\\")
         self.captureSpeed = round(self.ebookToPdf.captureSpeed.get(),1)
 
-        self.ebookToPdf.progress.set(0)
-
-
         self.count = 0
 
     def process(self):
@@ -131,13 +138,10 @@ class Capture:
         if not os.path.exists(save_dir):
             raise Exception("해당 경로가 발견되지 않음.")
 
-        for i in range(self.pages):
-            save_dir = self.dirpath+"\\"+self.name+str(self.count)+".png"
-            self.count += 1
+        save_dir = self.dirpath+"\\"+self.name+str(self.count)+".png"
+        self.count += 1
 
-            self._capture(save_dir)
-            self.ebookToPdf.progress.set(self.ebookToPdf.progress.get()+1)
-            time.sleep(self.captureSpeed)
+        self._capture(save_dir)
 
     def _capture(self, save_dir):
         
