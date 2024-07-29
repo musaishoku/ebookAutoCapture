@@ -1,3 +1,4 @@
+from pywinauto.keyboard import send_keys
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -6,7 +7,7 @@ import mss
 import mss.tools
 import os
 import time
-from pywinauto.keyboard import send_keys
+
 
 
 class ebookToPDF:
