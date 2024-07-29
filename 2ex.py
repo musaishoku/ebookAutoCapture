@@ -34,7 +34,7 @@ meters = StringVar()#Tkinter에서 제공하는 변수 클래스. .set() .get()�
 
 ttk.Label(mainframe, textvariable=meters).grid(column=2, row=2, sticky=(W, E))#textvariable로 meters를 넣어줌. 위의 calculate함수의 결과가 meters로 들어간다.
 
-ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=3, row=3, sticky=W)#command로 버튼을 눌렀을 때 실행될 함수의 참조값을 넘겨줌. 
+ttk.Button(mainframe, text="Calculate", command=calculate).grid(column=2, row=3, sticky=(W,E))#command로 버튼을 눌렀을 때 실행될 함수의 참조값을 넘겨줌. 
 
 ttk.Label(mainframe, text="feet").grid(column=3, row=1, sticky=W)
 ttk.Label(mainframe, text="is equivalent to").grid(column=1, row=2, sticky=E)
