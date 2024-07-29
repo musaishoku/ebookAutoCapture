@@ -6,6 +6,7 @@ import mss
 import mss.tools
 import os
 import time
+from pywinauto.keyboard import send_keys
 
 
 class ebookToPDF:
@@ -115,9 +116,7 @@ class ebookToPDF:
         for i in range(self.pages.get()):
             capture.process()
             self.progress.set(self.progress.get()+1)
-            pyautogui.keyDown('right')
-            time.sleep(0.1)
-            pyautogui.keyUp('right')
+            send_keys('{RIGHT}')
             time.sleep(self.captureSpeed.get())
 
 
