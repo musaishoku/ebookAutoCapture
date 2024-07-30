@@ -16,11 +16,13 @@ class ebookToPDF:
 
     def __init__(self, root):
 
+        #좌측 상단, 우측 하단 좌표를 저장하는 변수들
         self.x1 = 0
         self.y1 = 0
         self.x2 = 0
         self.y2 = 0
 
+        #좌표를 UI에 표시해주는 변수들
         self.posDisplay1 = StringVar()
         self.posDisplay2 = StringVar()
         self.posDisplay1.set("[0,0]")
@@ -28,17 +30,17 @@ class ebookToPDF:
 
         self.region = (0,0,0,0)#캡쳐 영역 설정
 
-        self.pages = IntVar()
+        self.pages = IntVar()#캡쳐 페이지 수
 
-        self.name = StringVar()
+        self.name = StringVar()#파일 이름
 
-        self.dirPath = StringVar()
+        self.dirPath = StringVar()#파일 저장 경로
 
-        self.captureSpeed = IntVar()
+        self.captureSpeed = IntVar()#캡쳐 간격
 
-        self.moveToNextPageOption = IntVar()
+        self.moveToNextPageOption = IntVar()#다음 페이지 이동 옵션(0: 키보드 오른쪽 방향키, 1: 마우스 좌클릭)
 
-        self.progress = DoubleVar()
+        self.progress = DoubleVar()#진행율 
         self.progress.set(0.0)
 
         root.title("ebookToPDF")
@@ -67,8 +69,8 @@ class ebookToPDF:
         ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=1000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=5, sticky=(W,E))
 
         ttk.Label(contents, text="다음 페이지 이동").grid(column=1, row=6, sticky=W)
-        ttk.Radiobutton(contents, text="마우스 클릭", variable=self.moveToNextPageOption, value=0).grid(column=2, row=6, sticky=W)
-        ttk.Radiobutton(contents, text="키보드 방향키", variable=self.moveToNextPageOption, value=1).grid(column=3, row=6, sticky=W)
+        ttk.Radiobutton(contents, text="키보드 방향키", variable=self.moveToNextPageOption, value=0).grid(column=2, row=6, sticky=W)
+        ttk.Radiobutton(contents, text="마우스 클릭", variable=self.moveToNextPageOption, value=1).grid(column=3, row=6, sticky=W)
 
         ttk.Progressbar(contents, orient=HORIZONTAL,length=30, mode='determinate', maximum = 10000, variable=self.progress).grid(column=1, row=7, columnspan=3, sticky=(W,E))
 
@@ -84,7 +86,7 @@ class ebookToPDF:
 
     def getPointerPosCallLeft(self,*args): #Tkinter를 통해서 호출되는 메서드는 매개변수로 반드시 *args를 가지고 있어야 함.
         print("getPointerPosCallLeft")
-        root.bind("<Key-space>", lambda event: self.getPointerPos(event,1))#바인드된 함수에 인자를 넘기려면 이런 방식으로 해야함.
+        root.bind("<Key-space>", lambda event: self.getPointerPos(event,1))#바인드된 함수에 인자를 넘기려면 이렇게 lambda로 우회적으로 넘겨야 함.
         root.focus_set()  # root로 포커스 강제 이동, 스페이스바를 눌렀을 때 버튼이 계속 눌리던 문제를 해결
 
     def getPointerPosCallRight(self,*args):
@@ -142,7 +144,7 @@ class Capture:
             moveToNextPage = self.selectMoveToNextPageOption(self.moveToNextPageOption)
             moveToNextPage()
             
-            root.after(self.captureSpeed,self.process)
+            root.after(self.captureSpeed,self.process)#Tkinter가 captureSpeed만큼의 ms가 지난 후 process()를 다시 호출함.
             #tkinter는 time.sleep을 쓰는게 좋지 않다고 함. 이렇게 해야 progressbar가 지속적으로 업데이트 됨.
             #https://stackoverflow.com/questions/51298758/tkinter-updating-progressbar-when-a-function-is-called
 
@@ -160,9 +162,9 @@ class Capture:
             
     def selectMoveToNextPageOption(self,num):
         if num == 0:
-            return self.moveToNextPageWithClick
-        elif num   == 1:
             return self.moveToNextPageWithKey
+        elif num   == 1:
+            return self.moveToNextPageWithClick
         
     #다음페이지로 넘겨주는 함수들
     def moveToNextPageWithKey(self):
