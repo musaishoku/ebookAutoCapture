@@ -42,7 +42,7 @@ class ebookToPDF:
         self.progress = DoubleVar()#진행율 
         self.progress.set(0.0)
 
-        root.title("ebookToPDF")
+        root.title("eBookAutoCapture")
         root.geometry("")#이렇게 해야 내부 위젯들 사이즈에 맞게 창의 크기가 자동으로 조절됨. https://stackoverflow.com/questions/50955987/auto-resize-tkinter-window-to-fit-all-widgets
         #root.resizable(width=False, height=False)      
 
