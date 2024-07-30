@@ -8,7 +8,6 @@ import mss.tools
 import time
 from datetime import datetime
 
-#잘가....
 
 class ebookToPDF:
 
@@ -44,38 +43,41 @@ class ebookToPDF:
 
         root.title("eBookAutoCapture")
         root.geometry("")#이렇게 해야 내부 위젯들 사이즈에 맞게 창의 크기가 자동으로 조절됨. https://stackoverflow.com/questions/50955987/auto-resize-tkinter-window-to-fit-all-widgets
-        #root.resizable(width=False, height=False)      
+        root.resizable(width=False, height=False)      
 
         contents = ttk.Frame(root, padding="3 3 3 3")
         contents.grid(column=0, row=0, sticky=(N, W, E, S))
         root.columnconfigure(0, weight=1)
         root.rowconfigure(0, weight=1)
 
-        ttk.Label(contents, text="좌측 상단 좌표", ).grid(column=1, row=1, sticky=W)
-        ttk.Label(contents, text="우측 하단 좌표", ).grid(column=1, row=2, sticky=W)
-        ttk.Label(contents, textvariable=self.posDisplay1, width=10).grid(column=2, row=1, sticky=(W, E))
-        ttk.Label(contents, textvariable=self.posDisplay2, width=10).grid(column=2, row=2, sticky=(W, E))
-        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallLeft).grid(column=3, row=1, sticky=(W, E))
-        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallRight).grid(column=3, row=2, sticky=(W, E))
+        ttk.Label(contents, text="madeBy p0tat0-113", ).grid(column=1, row=1, columnspan=3, sticky=W)
+        ttk.Label(contents, text="설정 버튼을 누른 후 space키를 눌러야 좌표가 기입됨").grid(column=1, row=2, columnspan=3, sticky=W)
 
-        ttk.Label(contents, text="총 페이지 수").grid(column=1, row=3, sticky=W)
-        ttk.Label(contents, text="파일 이름").grid(column=1, row=4, sticky=W)
-        ttk.Entry(contents, width=10, textvariable=self.pages).grid(column=3, row=3, sticky=(W, E))
-        ttk.Entry(contents, width=10, textvariable=self.name).grid(column=3, row=4, sticky=(W, E))
+        ttk.Label(contents, text="좌측 상단 좌표", ).grid(column=1, row=3, sticky=W)
+        ttk.Label(contents, text="우측 하단 좌표", ).grid(column=1, row=4, sticky=W)
+        ttk.Label(contents, textvariable=self.posDisplay1, width=10).grid(column=2, row=3, sticky=(W, E))
+        ttk.Label(contents, textvariable=self.posDisplay2, width=10).grid(column=2, row=4, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallLeft).grid(column=3, row=3, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallRight).grid(column=3, row=4, sticky=(W, E))
 
-        ttk.Label(contents, text="캡쳐 간격(ms)").grid(column=1, row=5, sticky=W)
-        ttk.Label(contents, textvariable=self.captureSpeed,width=3).grid(column=2, row=5, sticky=(W, E))
-        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=1000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=5, sticky=(W,E))
+        ttk.Label(contents, text="총 페이지 수").grid(column=1, row=5, sticky=W)
+        ttk.Label(contents, text="파일 이름").grid(column=1, row=6, sticky=W)
+        ttk.Entry(contents, width=10, textvariable=self.pages).grid(column=3, row=5, sticky=(W, E))
+        ttk.Entry(contents, width=10, textvariable=self.name).grid(column=3, row=6, sticky=(W, E))
 
-        ttk.Label(contents, text="다음 페이지 이동").grid(column=1, row=6, sticky=W)
-        ttk.Radiobutton(contents, text="키보드 방향키", variable=self.moveToNextPageOption, value=0).grid(column=2, row=6, sticky=W)
-        ttk.Radiobutton(contents, text="마우스 클릭", variable=self.moveToNextPageOption, value=1).grid(column=3, row=6, sticky=W)
+        ttk.Label(contents, text="캡쳐 간격(ms)").grid(column=1, row=7, sticky=W)
+        ttk.Label(contents, textvariable=self.captureSpeed,width=3).grid(column=2, row=7, sticky=(W, E))
+        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=1000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=7, sticky=(W,E))
 
-        ttk.Progressbar(contents, orient=HORIZONTAL,length=30, mode='determinate', maximum = 10000, variable=self.progress).grid(column=1, row=7, columnspan=3, sticky=(W,E))
+        ttk.Label(contents, text="다음 페이지 이동").grid(column=1, row=8, sticky=W)
+        ttk.Radiobutton(contents, text="키보드 방향키", variable=self.moveToNextPageOption, value=0).grid(column=2, row=8, sticky=W)
+        ttk.Radiobutton(contents, text="마우스 클릭", variable=self.moveToNextPageOption, value=1).grid(column=3, row=8, sticky=W)
 
-        ttk.Button(contents, text="작업 시작", command=self.captureCall).grid(column=1, row=8,columnspan=3, sticky=(W,E))
-        ttk.Button(contents, text="저장 경로 설정", command=self.getDirPath).grid(column=1, row=9,columnspan=3, sticky=(W,E))
-        ttk.Label(contents, text="경로", textvariable=self.dirPath, width=51).grid(column=1, row=10,columnspan=3, sticky=W)
+        ttk.Progressbar(contents, orient=HORIZONTAL,length=30, mode='determinate', maximum = 10000, variable=self.progress).grid(column=1, row=9, columnspan=3, sticky=(W,E))
+
+        ttk.Button(contents, text="작업 시작", command=self.captureCall).grid(column=1, row=10,columnspan=3, sticky=(W,E))
+        ttk.Button(contents, text="저장 경로 설정", command=self.getDirPath).grid(column=1, row=11,columnspan=3, sticky=(W,E))
+        ttk.Label(contents, text="경로", textvariable=self.dirPath, width=51).grid(column=1, row=12,columnspan=3, sticky=W)
 
         for child in contents.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
