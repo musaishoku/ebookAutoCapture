@@ -34,7 +34,7 @@ class ebookToPDF:
 
         self.dirPath = StringVar()
 
-        self.captureSpeed = DoubleVar()
+        self.captureSpeed = IntVar()
 
         self.moveToNextPageOption = IntVar()
 
@@ -62,9 +62,9 @@ class ebookToPDF:
         ttk.Entry(contents, width=10, textvariable=self.pages).grid(column=3, row=3, sticky=(W, E))
         ttk.Entry(contents, width=10, textvariable=self.name).grid(column=3, row=4, sticky=(W, E))
 
-        ttk.Label(contents, text="캡쳐 간격(초)").grid(column=1, row=5, sticky=W)
+        ttk.Label(contents, text="캡쳐 간격(ms)").grid(column=1, row=5, sticky=W)
         ttk.Label(contents, textvariable=self.captureSpeed,width=3).grid(column=2, row=5, sticky=(W, E))
-        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=0.1, to=1.0, variable=self.captureSpeed).grid(column=3, row=5, sticky=(W,E))
+        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=1000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=5, sticky=(W,E))
 
         ttk.Label(contents, text="다음 페이지 이동").grid(column=1, row=6, sticky=W)
         ttk.Radiobutton(contents, text="마우스 클릭", variable=self.moveToNextPageOption, value=0).grid(column=2, row=6, sticky=W)
@@ -79,6 +79,8 @@ class ebookToPDF:
         for child in contents.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
     
+    def floatToInt(self, *args):#Scale바를 통해서 입력되는 값의 소숫점을 제거함.
+        self.captureSpeed.set(round(self.captureSpeed.get(),0))
 
     def getPointerPosCallLeft(self,*args): #Tkinter를 통해서 호출되는 메서드는 매개변수로 반드시 *args를 가지고 있어야 함.
         print("getPointerPosCallLeft")
@@ -120,13 +122,14 @@ class Capture:
         self.pages = ebookToPDF.pages.get()
         self.name = ebookToPDF.name.get()
         self.dirpath = ebookToPDF.dirPath.get().replace("/","\\")
-        self.captureSpeed = int(round(ebookToPDF.captureSpeed.get(),1)*1000)
+        self.captureSpeed = ebookToPDF.captureSpeed.get()
         self.region = (ebookToPDF.x1,ebookToPDF.y1,ebookToPDF.x2-ebookToPDF.x1,ebookToPDF.y2-ebookToPDF.y1)
 
         self.progress = ebookToPDF.progress
         self.progress.set(0.0)
 
-        self.moveToNextPage = self.selectMoveToNextPageOption(ebookToPDF.moveToNextPageOption.get())
+        self.moveToNextPageOption = ebookToPDF.moveToNextPageOption.get()
+        print(ebookToPDF.moveToNextPageOption.get())
 
         self.count = 1
 
@@ -136,7 +139,8 @@ class Capture:
             self.capture()
             self.progress.set(self.progress.get()+(10000/self.pages))
 
-            self.moveToNextPage()
+            moveToNextPage = self.selectMoveToNextPageOption(self.moveToNextPageOption)
+            moveToNextPage()
             
             root.after(self.captureSpeed,self.process)
             #tkinter는 time.sleep을 쓰는게 좋지 않다고 함. 이렇게 해야 progressbar가 지속적으로 업데이트 됨.
@@ -154,12 +158,11 @@ class Capture:
             screenshot = sct.grab(monitor)
             mss.tools.to_png(screenshot.rgb, screenshot.size, output=save_dir)
             
-
     def selectMoveToNextPageOption(self,num):
         if num == 0:
-            return self.moveToNextPageWithKey
-        elif num   == 1:
             return self.moveToNextPageWithClick
+        elif num   == 1:
+            return self.moveToNextPageWithKey
         
     #다음페이지로 넘겨주는 함수들
     def moveToNextPageWithKey(self):
