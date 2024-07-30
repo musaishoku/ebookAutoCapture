@@ -9,7 +9,7 @@ import os
 import time
 import pydirectinput as pdi
 
-
+#잘가....
 
 class ebookToPDF:
 
