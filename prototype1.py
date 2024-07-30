@@ -5,9 +5,7 @@ from tkinter import filedialog
 import pyautogui
 import mss
 import mss.tools
-import os
 import time
-import pydirectinput as pdi
 from datetime import datetime
 
 #잘가....
@@ -37,6 +35,7 @@ class ebookToPDF:
         self.dirPath = StringVar()#파일 저장 경로
 
         self.captureSpeed = IntVar()#캡쳐 간격
+        self.captureSpeed.set(200)
 
         self.moveToNextPageOption = IntVar()#다음 페이지 이동 옵션(0: 키보드 오른쪽 방향키, 1: 마우스 좌클릭)
 
@@ -168,13 +167,11 @@ class Capture:
         
     #다음페이지로 넘겨주는 함수들
     def moveToNextPageWithKey(self):
-        pdi.keyDown("right")
-        time.sleep(0.1)
-        pdi.keyUp("right")
+        pyautogui.press("right")
         print("딸칵")
 
     def moveToNextPageWithClick(self):
-        pdi.leftClick()
+        pyautogui.leftClick()
         print("클릭")
 
 
