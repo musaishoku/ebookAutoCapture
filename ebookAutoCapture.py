@@ -25,8 +25,6 @@ class ebookToPDF:
         self.posDisplay1.set("[0,0]")
         self.posDisplay2.set("[0,0]")
 
-        self.region = (0,0,0,0)#캡쳐 영역 설정
-
         self.pages = IntVar()#캡쳐 페이지 수
 
         self.name = StringVar()#파일 이름
@@ -57,8 +55,8 @@ class ebookToPDF:
         ttk.Label(contents, text="우측 하단 좌표", ).grid(column=1, row=4, sticky=W)
         ttk.Label(contents, textvariable=self.posDisplay1, width=10).grid(column=2, row=3, sticky=(W, E))
         ttk.Label(contents, textvariable=self.posDisplay2, width=10).grid(column=2, row=4, sticky=(W, E))
-        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallLeft).grid(column=3, row=3, sticky=(W, E))
-        ttk.Button(contents, text="좌표 설정", command=self.getPointerPosCallRight).grid(column=3, row=4, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.callGetPointerPosLeft).grid(column=3, row=3, sticky=(W, E))
+        ttk.Button(contents, text="좌표 설정", command=self.callGetPointerPosRight).grid(column=3, row=4, sticky=(W, E))
 
         ttk.Label(contents, text="총 페이지 수").grid(column=1, row=5, sticky=W)
         ttk.Label(contents, text="파일 이름").grid(column=1, row=6, sticky=W)
@@ -85,13 +83,13 @@ class ebookToPDF:
     def floatToInt(self, *args):#Scale바를 통해서 입력되는 값의 소숫점을 제거함.
         self.captureSpeed.set(round(self.captureSpeed.get(),0))
 
-    def getPointerPosCallLeft(self,*args): #Tkinter를 통해서 호출되는 메서드는 매개변수로 반드시 *args를 가지고 있어야 함.
-        print("getPointerPosCallLeft")
+    def callGetPointerPosLeft(self,*args): #Tkinter를 통해서 호출되는 메서드는 매개변수로 반드시 *args를 가지고 있어야 함.
+        print("callGetPointerPosLeft")
         root.bind("<Key-space>", lambda event: self.getPointerPos(event,1))#바인드된 함수에 인자를 넘기려면 이렇게 lambda로 우회적으로 넘겨야 함.
         root.focus_set()  # root로 포커스 강제 이동, 스페이스바를 눌렀을 때 버튼이 계속 눌리던 문제를 해결
 
-    def getPointerPosCallRight(self,*args):
-        print("getPointerPosCallRight")
+    def callGetPointerPosRight(self,*args):
+        print("callGetPointerPosRight")
         root.bind("<Key-space>", lambda event: self.getPointerPos(event,2))
         root.focus_set()  # root로 포커스 강제 이동
 
@@ -112,49 +110,83 @@ class ebookToPDF:
         print(self.dirPath.get())
 
     def captureCall(self, *args):
-        capture = Capture(self,root)#이 인스턴스를 통째로 넘겨줌.
+        capture = Capture()
+        capture\
+            .setRoot(root)\
+            .setRegion(self.x1,self.y1,self.x2,self.y2)\
+            .setPages(self.pages.get())\
+            .setName(self.name.get())\
+            .setDirpath(self.dirPath.get())\
+            .setCaptureSpeed(self.captureSpeed.get())\
+            .setProgres(self.progress)\
+            .setMoveToNextPage(self.moveToNextPageOption.get())
 
         root.after(2000, capture.process)
 
-
-
 class Capture:
-    def __init__(self,ebookToPDF,root):
-        self.root = root
-        self.region = ebookToPDF.region
-        self.pages = ebookToPDF.pages.get()
-        self.name = ebookToPDF.name.get()
-        self.dirpath = ebookToPDF.dirPath.get().replace("/","\\")
-        self.captureSpeed = ebookToPDF.captureSpeed.get()
-        self.region = (ebookToPDF.x1,ebookToPDF.y1,ebookToPDF.x2-ebookToPDF.x1,ebookToPDF.y2-ebookToPDF.y1)
-
-        self.progress = ebookToPDF.progress
-        self.progress.set(0.0)
-
-        self.moveToNextPageOption = ebookToPDF.moveToNextPageOption.get()
-        print(ebookToPDF.moveToNextPageOption.get())
-
+    def __init__(self):
+        self.root = None
+        self.region = None
+        self.pages = None
+        self.name = None
+        self.dirpath = None
+        self.captureSpeed = None
+        self.progress = None
+        self.moveToNextPage = None
         self.count = 1
 
+    def setRoot(self,root):
+        self.root = root
+        return self
+    
+    def setRegion(self,x1,y1,x2,y2):
+        self.region = (x1,y1,x2-x1,y2-y1)
+        return self
+    
+    def setPages(self,pages):
+        self.pages = pages
+        return self
+    
+    def setName(self,name):
+        self.name = name
+        return self
+    
+    def setDirpath(self,dirpath):
+        self.dirpath = dirpath.replace("/","\\")
+        return self
+    
+    def setCaptureSpeed(self,captureSpeed):
+        self.captureSpeed = captureSpeed
+        return self
+    
+    def setProgres(self,progress):
+        '''ValueVar타입으로 받아야 함.'''
+        self.progress = progress
+        progress.set(0.0)
+        return self
+    
+    def setMoveToNextPage(self,moveToNextPageOption):
+        self.moveToNextPage = self.selectMoveToNextPageOption(moveToNextPageOption)
+        return self
+
     def process(self):
+        self.capture()
+
+        self.progress.set(self.progress.get()+(10000/self.pages))
+        self.moveToNextPage()
+        self.count += 1
 
         if (self.count<=self.pages):
-            self.capture()
-            self.progress.set(self.progress.get()+(10000/self.pages))
-
-            moveToNextPage = self.selectMoveToNextPageOption(self.moveToNextPageOption)
-            moveToNextPage()
-            
             root.after(self.captureSpeed,self.process)#Tkinter가 captureSpeed만큼의 ms가 지난 후 process()를 다시 호출함.
             #tkinter는 time.sleep을 쓰는게 좋지 않다고 함. 이렇게 해야 progressbar가 지속적으로 업데이트 됨.
             #https://stackoverflow.com/questions/51298758/tkinter-updating-progressbar-when-a-function-is-called
+
+        print("작업 완료")
 
     def capture(self):
         now = datetime.now().strftime("%Y%m%d-%H%M%S")
         save_dir = str(f"{self.dirpath}\\{self.name}[{self.count}]{now}.png")
         print(save_dir)
-
-        self.count += 1
 
         with mss.mss() as sct:
             monitor = {"top": self.region[1], "left": self.region[0], "width": self.region[2], "height": self.region[3]}
@@ -170,11 +202,11 @@ class Capture:
     #다음페이지로 넘겨주는 함수들
     def moveToNextPageWithKey(self):
         pyautogui.press("right")
-        print("딸칵")
+        print("키보드 딸칵")
 
     def moveToNextPageWithClick(self):
         pyautogui.leftClick()
-        print("클릭")
+        print("마우스 딸칵")
 
 
 root = Tk()
