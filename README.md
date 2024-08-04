@@ -1,6 +1,6 @@
 # ebookAutoCapture
 
-![image](https://github.com/user-attachments/assets/89204895-e468-411e-8847-c34506cd1792)
+![스크린샷 2024-08-04 191118](https://github.com/user-attachments/assets/92c64724-795a-45c7-b6fe-816e2e29da52)
 
 ### 프로그램 소개
 
