@@ -65,7 +65,7 @@ class ebookToPDF:
 
         ttk.Label(contents, text="캡쳐 간격(ms)").grid(column=1, row=7, sticky=W)
         ttk.Label(contents, textvariable=self.captureSpeed,width=3).grid(column=2, row=7, sticky=(W, E))
-        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=1000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=7, sticky=(W,E))
+        ttk.Scale(contents, orient=HORIZONTAL, length=100, from_=1, to=3000, variable=self.captureSpeed, command=self.floatToInt).grid(column=3, row=7, sticky=(W,E))
 
         ttk.Label(contents, text="다음 페이지 이동").grid(column=1, row=8, sticky=W)
         ttk.Radiobutton(contents, text="키보드 방향키", variable=self.moveToNextPageOption, value=0).grid(column=2, row=8, sticky=W)
